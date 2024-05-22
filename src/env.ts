@@ -10,6 +10,8 @@ export const env = createEnv({
 
     RAZORPAY_KEY: z.string(),
     RAZORPAY_SECRET: z.string(),
+
+    DEVELOPMENT: z.string(),
   },
 
   runtimeEnv: process.env,

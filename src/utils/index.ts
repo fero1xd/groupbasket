@@ -4,6 +4,7 @@ import cors from "cors";
 import { registerRoutes } from "../routes";
 import { createHmac } from "crypto";
 import type { Orders } from "razorpay/dist/types/orders";
+import { globalErrorHandler } from "./errors";
 
 export const registerMiddlewares = (app: Application) => {
   app.use(
@@ -27,6 +28,8 @@ export const registerMiddlewares = (app: Application) => {
     const order = req.body.payload.order as Orders.RazorpayOrder;
   });
   app.use("/api", registerRoutes(app));
+
+  app.use(globalErrorHandler);
 };
 
 export const createEmailTemplate = (
