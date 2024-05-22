@@ -1,0 +1,24 @@
+{
+  "name": "groupbasket",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --outfile=dist/index.js --format=esm",
+    "lint": "tsgit remote add origin https://github.com/fero1xd/groupbasket.gitc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@total-typescript/tsconfig": "^1.0.4",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.12",
+    "dotenv": "^16.4.5",
+    "esbuild": "^0.21.3"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "stripe": "^15.7.0"
+  }
+}
