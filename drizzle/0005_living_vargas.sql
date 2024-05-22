@@ -1,0 +1,1 @@
+ALTER TABLE "demand" ADD CONSTRAINT "demand_email_unique" UNIQUE("email");

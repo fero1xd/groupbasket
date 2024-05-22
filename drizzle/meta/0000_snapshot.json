@@ -1,0 +1,81 @@
+{
+  "id": "61a037b5-74cc-4cb4-8ad8-23bdf6eda6a2",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "6",
+  "dialect": "postgresql",
+  "tables": {
+    "public.products": {
+      "name": "products",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "images": {
+          "name": "images",
+          "type": "varchar[]",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{}'::text[]"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "modeNumber": {
+          "name": "modeNumber",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "marketPrice": {
+          "name": "marketPrice",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "sellingPrice": {
+          "name": "sellingPrice",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "targetOrders": {
+          "name": "targetOrders",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "currentDemand": {
+          "name": "currentDemand",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
