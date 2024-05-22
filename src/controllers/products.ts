@@ -1,4 +1,5 @@
 import { operations } from "../db/operations";
+import { createOrder } from "../payments";
 import { sendEmail } from "../sendgrid";
 import { createEmailTemplate } from "../utils";
 import type {
@@ -47,15 +48,27 @@ export const demandProduct: DemandProductHandler = async (req, res) => {
     if (!result.demand) {
       return res.status(400).send("Product target already reached");
     }
-    const emails = await operations.getProductDemands(req.body.productId);
-    const html = createEmailTemplate(result.product.name);
+    const users = await operations.getProductDemands(req.body.productId);
 
     sendEmail(
-      emails.map(({ email }) => ({
-        to: email,
-        subject: "Your deal is now available",
-        html,
-      }))
+      await Promise.all(
+        users.map(async (user) => {
+          const orderId = await createOrder(
+            result.product.sellingPrice,
+            user.address
+          );
+
+          return {
+            to: user.email,
+            subject: "Your deal is now available",
+            html: createEmailTemplate(
+              result.product.name,
+              user.address,
+              orderId
+            ),
+          };
+        })
+      )
     );
 
     return res.json({ demand: result.demand });

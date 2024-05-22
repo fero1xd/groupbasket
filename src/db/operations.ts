@@ -39,6 +39,7 @@ export const operations = {
       where: eq(demands.productId, productId),
       columns: {
         email: true,
+        address: true,
       },
     }),
 };

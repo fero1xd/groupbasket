@@ -7,6 +7,9 @@ export const env = createEnv({
     DATABASE_URL: z.string().url(),
     PORT: z.string(),
     SENDGRID_API_KEY: z.string(),
+
+    RAZORPAY_KEY: z.string(),
+    RAZORPAY_SECRET: z.string(),
   },
 
   runtimeEnv: process.env,
