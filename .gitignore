@@ -1,8 +1,4 @@
 node_modules
 .env*
-<<<<<<< HEAD
-dist
-=======
 dist
 drizzle
->>>>>>> ac38c7d (reinit)
