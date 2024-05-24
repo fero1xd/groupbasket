@@ -18,7 +18,7 @@ export const operations = {
       (await db.insert(products).values(data).returning())[0],
   },
   orders: {
-    createOrder: async (data: InsertOrderSchema) => {
+    createOrder: async (data: InsertOrderSchema & { userId: string }) => {
       const product = await operations.products.getProduct(data.productId);
       if (!product) {
         return;

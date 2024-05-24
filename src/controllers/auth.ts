@@ -1,34 +1,27 @@
 import { Argon2id } from "oslo/password";
 import { operations } from "../db/operations";
 import type { LoginHandler, RegisterUserHandler } from "./types";
-import { lucia } from "../auth/adapter";
 import { ApiError } from "../utils/errors";
 import type { RequestHandler } from "express";
+import { setSessionCookie } from "../auth/utils";
 
 export const registerUser: RegisterUserHandler = async (req, res, next) => {
   const hashedPassword = await new Argon2id().hash(req.body.password);
 
+  const { name, email, isAffiliate } = req.body;
+
   const dbUser = await operations.auth.createUser({
-    ...req.body,
+    name,
+    email,
     password: hashedPassword,
+    isAffiliate: typeof isAffiliate === "boolean" ? isAffiliate : false,
   });
 
   if (!dbUser) {
     return next(new ApiError(404, "Cannot create an account right now!"));
   }
 
-  const { id, name, email, isAdmin, isAffiliate } = dbUser;
-
-  const session = await lucia.createSession(id, {
-    name,
-    email,
-    isAdmin,
-    isAffiliate,
-  });
-
-  const sessionCookie = await lucia.createSessionCookie(session.id);
-  res.cookie(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-
+  await setSessionCookie(dbUser, res);
   return res.send("Success");
 };
 
@@ -47,19 +40,11 @@ export const login: LoginHandler = async (req, res, next) => {
     return next(new ApiError(404, "invalid credentials"));
   }
 
-  const { id, name, email, isAdmin, isAffiliate } = dbUser;
-  const session = await lucia.createSession(id, {
-    name,
-    email,
-    isAdmin,
-    isAffiliate,
-  });
-
-  const sessionCookie = await lucia.createSessionCookie(session.id);
-  res.cookie(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-
+  await setSessionCookie(dbUser, res);
   return res.send("Success");
 };
+
+export const createAffiliate = async () => {};
 
 export const getMe: RequestHandler = (_req, res) => {
   return res.json({ me: res.locals.user });

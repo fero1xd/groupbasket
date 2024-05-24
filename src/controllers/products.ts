@@ -39,7 +39,10 @@ export const createProduct: CreateProductHandler = async (req, res) => {
 };
 
 export const orderProduct: OrderProductHandler = async (req, res) => {
-  const result = await operations.orders.createOrder(req.body);
+  const result = await operations.orders.createOrder({
+    ...req.body,
+    userId: res.locals.user!.id,
+  });
   if (!result) {
     return res.status(400).end();
   }

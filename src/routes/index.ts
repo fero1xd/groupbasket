@@ -14,7 +14,7 @@ import {
 } from "../db/zod";
 import { ApiError } from "../utils/errors";
 import { getMe, login, registerUser } from "../controllers/auth";
-import { authMiddleware } from "../auth/middleware";
+import { assureAdmin, authMiddleware } from "../auth/middleware";
 
 const checkPayload = (schema: z.ZodSchema): RequestHandler => {
   return (req, _res, next) => {
@@ -30,14 +30,33 @@ const checkPayload = (schema: z.ZodSchema): RequestHandler => {
 export const registerRoutes = () => {
   const router = Router();
 
+  router.post(
+    "/auth/register",
+    checkPayload(registerSchema),
+    (req, res, next) => {
+      if (typeof req.body.isAffiliate === "boolean") {
+        return authMiddleware(req, res, next);
+      }
+      return next();
+    },
+    (req, res, next) => {
+      if (typeof req.body.isAffiliate === "boolean") {
+        return assureAdmin(req, res, next);
+      }
+
+      return next();
+    },
+    registerUser
+  );
+  router.post("/auth/login", checkPayload(loginSchema), login);
+
+  router.use(authMiddleware);
+
   router.get("/products", getAllProducts);
   router.get("/products/:id", getProduct);
   router.post("/products", checkPayload(insertProductSchema), createProduct);
   router.post("/products/order", checkPayload(insertOrderSchema), orderProduct);
-
-  router.post("/auth/register", checkPayload(registerSchema), registerUser);
-  router.post("/auth/login", checkPayload(loginSchema), login);
-  router.get("/auth/me", authMiddleware, getMe);
+  router.get("/auth/me", getMe);
 
   return router;
 };

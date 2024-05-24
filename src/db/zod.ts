@@ -21,6 +21,7 @@ export const insertOrderSchema = createInsertSchema(orders)
   .omit({
     createdAt: true,
     isPaid: true,
+    userId: true,
   })
   .strict();
 export const selectOrderSchema = createSelectSchema(orders).strict();
@@ -33,7 +34,6 @@ export const registerSchema = createInsertSchema(users, {
     createdAt: true,
     updatedAt: true,
     isAdmin: true,
-    isAffiliate: true,
   })
   .strict();
 

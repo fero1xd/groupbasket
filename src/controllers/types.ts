@@ -39,3 +39,9 @@ export type RegisterUserHandler = RequestHandler<
 >;
 
 export type LoginHandler = RequestHandler<unknown, string, LoginSchema>;
+
+export type CreateAffiliateHandler = RequestHandler<
+  unknown,
+  string,
+  InsertUserSchema
+>;
