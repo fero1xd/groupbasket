@@ -6,14 +6,14 @@ const instance = new Razorpay({
   key_secret: env.RAZORPAY_SECRET,
 });
 
-export const createOrder = async (amount: number, address: string) => {
+export const createOrder = async (orderId: string, amount: number) => {
   const order = await instance.orders.create({
     amount,
     currency: "INR",
     receipt: "receipt#1",
     partial_payment: false,
     notes: {
-      address,
+      orderId,
     },
   });
 

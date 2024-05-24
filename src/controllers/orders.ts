@@ -41,8 +41,8 @@ export const orderProduct: OrderProductHandler = async (req, res, next) => {
       await Promise.all(
         orders.map(async (order) => {
           const orderId = await createOrder(
-            result.product.sellingPrice,
-            order.address
+            order.id,
+            result.product.sellingPrice
           );
 
           return {

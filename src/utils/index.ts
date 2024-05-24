@@ -5,6 +5,7 @@ import { registerRoutes } from "../routes";
 import { createHmac } from "crypto";
 import type { Orders } from "razorpay/dist/types/orders";
 import { globalErrorHandler } from "./errors";
+import { operations } from "../db/operations";
 
 export const registerMiddlewares = (app: Application) => {
   app.use(
@@ -16,7 +17,6 @@ export const registerMiddlewares = (app: Application) => {
 
   app.post("/", (req, res) => {
     const secret = "abcdefgh";
-    console.log("dcadw");
     const shasum = createHmac("sha256", secret);
     shasum.update(JSON.stringify(req.body));
     const digest = shasum.digest("hex");
@@ -26,6 +26,9 @@ export const registerMiddlewares = (app: Application) => {
     }
 
     const order = req.body.payload.order as Orders.RazorpayOrder;
+    // TODO: Handle this better
+
+    operations.orders.setOrderStatus(order.notes!.orderId as string, true);
   });
   app.use("/api", registerRoutes());
 

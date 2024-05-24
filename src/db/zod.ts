@@ -22,6 +22,7 @@ export const insertOrderSchema = createInsertSchema(orders)
     createdAt: true,
     isPaid: true,
     userId: true,
+    id: true,
   })
   .strict();
 export const selectOrderSchema = createSelectSchema(orders).strict();

@@ -58,8 +58,18 @@ export const operations = {
         },
         columns: {
           address: true,
+          id: true,
         },
       }),
+
+    setOrderStatus: async (orderId: string, isPaid: boolean) =>
+      (
+        await db
+          .update(orders)
+          .set({ isPaid })
+          .where(eq(orders.id, orderId))
+          .returning()
+      )[0],
   },
 
   auth: {

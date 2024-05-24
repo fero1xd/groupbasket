@@ -47,6 +47,10 @@ export const productsRelation = relations(products, ({ many }) => ({
 export const orders = pgTable(
   "orders",
   {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => createId())
+      .notNull(),
     productId: integer("productId")
       .notNull()
       .references(() => products.id),
@@ -60,7 +64,7 @@ export const orders = pgTable(
     isPaid: boolean("isPaid").default(false).notNull(),
     createdAt: timestamp("createdAt").notNull().defaultNow(),
   },
-  (t) => ({ pk: primaryKey({ columns: [t.productId, t.userId] }) })
+  (t) => ({ uniq: unique().on(t.productId, t.userId) })
 );
 
 export const ordersRelations = relations(orders, ({ one }) => ({
