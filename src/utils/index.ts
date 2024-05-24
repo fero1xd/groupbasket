@@ -27,11 +27,7 @@ export const registerMiddlewares = (app: Application) => {
 
     const order = req.body.payload.order as Orders.RazorpayOrder;
   });
-<<<<<<< HEAD
-  app.use("/api", registerRoutes(app));
-=======
   app.use("/api", registerRoutes());
->>>>>>> ac38c7d (reinit)
 
   app.use(globalErrorHandler);
 };

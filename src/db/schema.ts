@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
 import { createId } from "@paralleldrive/cuid2";
->>>>>>> ac38c7d (reinit)
 import { relations, sql } from "drizzle-orm";
 import {
   pgTable,
@@ -10,10 +7,6 @@ import {
   varchar,
   integer,
   timestamp,
-<<<<<<< HEAD
-} from "drizzle-orm/pg-core";
-
-=======
   boolean,
   primaryKey,
 } from "drizzle-orm/pg-core";
@@ -28,7 +21,6 @@ function timestamps() {
   };
 }
 
->>>>>>> ac38c7d (reinit)
 export const products = pgTable("products", {
   id: serial("id").primaryKey().notNull(),
   images: varchar("images")
@@ -43,37 +35,6 @@ export const products = pgTable("products", {
   targetOrders: integer("targetOrders").notNull(),
   currentDemand: integer("currentDemand").default(0).notNull(),
 
-<<<<<<< HEAD
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
-  updatedAt: timestamp("updatedAt")
-    .notNull()
-    .defaultNow()
-    .$onUpdateFn(() => new Date()),
-});
-
-export const productsRelation = relations(products, ({ many }) => ({
-  demands: many(demands),
-}));
-
-export const demands = pgTable("demand", {
-  id: serial("id").notNull().primaryKey(),
-  productId: integer("productId")
-    .notNull()
-    .references(() => products.id),
-
-  name: varchar("name", { length: 255 }).notNull(),
-  email: varchar("email", { length: 255 }).unique().notNull(),
-  address: text("address").notNull(),
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
-});
-
-export const demandsRelations = relations(demands, ({ one }) => ({
-  product: one(products, {
-    fields: [demands.productId],
-    references: [products.id],
-  }),
-}));
-=======
   ...timestamps(),
 });
 
@@ -135,4 +96,3 @@ export const sessions = pgTable("sessions", {
     mode: "date",
   }).notNull(),
 });
->>>>>>> ac38c7d (reinit)
