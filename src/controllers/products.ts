@@ -1,10 +1,7 @@
 import { operations } from "../db/operations";
-import { createOrder } from "../payments";
-import { sendEmail } from "../sendgrid";
-import { createEmailTemplate } from "../utils";
+
 import type {
   CreateProductHandler,
-  OrderProductHandler,
   GetAllProductsHandler,
   GetProductHandler,
 } from "./types";
@@ -36,49 +33,4 @@ export const createProduct: CreateProductHandler = async (req, res) => {
   }
 
   return res.json({ product });
-};
-
-export const orderProduct: OrderProductHandler = async (req, res) => {
-  const result = await operations.orders.createOrder({
-    ...req.body,
-    userId: res.locals.user!.id,
-  });
-  if (!result) {
-    return res.status(400).end();
-  }
-
-  if (result.hasReachedTarget) {
-    if (!result.order) {
-      return res.status(400).send("Product target already reached");
-    }
-    const orders = await operations.orders.getProductOrders(req.body.productId);
-
-    sendEmail(
-      await Promise.all(
-        orders.map(async (order) => {
-          const orderId = await createOrder(
-            result.product.sellingPrice,
-            order.address
-          );
-
-          return {
-            to: order.user.email,
-            subject: "Your deal is now available",
-            html: createEmailTemplate(
-              result.product.name,
-              order.address,
-              orderId
-            ),
-          };
-        })
-      )
-    );
-
-    return res.json({ order: result.order });
-  }
-  if (!result.order) {
-    return res.status(400).send("Cannot create order right now");
-  }
-
-  return res.json({ order: result.order });
 };

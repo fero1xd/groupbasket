@@ -1,7 +1,6 @@
 import { Router, type RequestHandler } from "express";
 import {
   createProduct,
-  orderProduct,
   getAllProducts,
   getProduct,
 } from "../controllers/products";
@@ -14,7 +13,17 @@ import {
 } from "../db/zod";
 import { ApiError } from "../utils/errors";
 import { getMe, login, registerUser } from "../controllers/auth";
-import { assureAdmin, authMiddleware } from "../auth/middleware";
+import {
+  assureAdmin,
+  assureAffiliate,
+  authMiddleware,
+} from "../auth/middleware";
+import {
+  createAffiliateLink,
+  getAffiliateOrders,
+  getMyAffiliateLinks,
+} from "../controllers/affiliate";
+import { getMyOrders, orderProduct } from "../controllers/orders";
 
 const checkPayload = (schema: z.ZodSchema): RequestHandler => {
   return (req, _res, next) => {
@@ -50,13 +59,24 @@ export const registerRoutes = () => {
   );
   router.post("/auth/login", checkPayload(loginSchema), login);
 
+  // Protected routes
   router.use(authMiddleware);
 
   router.get("/products", getAllProducts);
   router.get("/products/:id", getProduct);
   router.post("/products", checkPayload(insertProductSchema), createProduct);
-  router.post("/products/order", checkPayload(insertOrderSchema), orderProduct);
   router.get("/auth/me", getMe);
+
+  // Orders Route
+  router.post("/orders", checkPayload(insertOrderSchema), orderProduct);
+  router.get("/orders/my", getMyOrders);
+
+  // Affiliate routes
+  router.use(assureAffiliate);
+
+  router.post("/affiliates", createAffiliateLink);
+  router.get("/affiliates/my", getMyAffiliateLinks);
+  router.get("/affiliates/orders/:id", getAffiliateOrders);
 
   return router;
 };

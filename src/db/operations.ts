@@ -1,7 +1,8 @@
-import { eq } from "drizzle-orm";
+import { eq, getTableColumns } from "drizzle-orm";
 import { db } from ".";
-import { orders, products, users } from "./schema";
+import { affiliateLinks, orders, products, users } from "./schema";
 import type {
+  InsertAffiliateLinkSchema,
   InsertOrderSchema,
   InsertProductSchema,
   InsertUserSchema,
@@ -18,7 +19,7 @@ export const operations = {
       (await db.insert(products).values(data).returning())[0],
   },
   orders: {
-    createOrder: async (data: InsertOrderSchema & { userId: string }) => {
+    create: async (data: InsertOrderSchema & { userId: string }) => {
       const product = await operations.products.getProduct(data.productId);
       if (!product) {
         return;
@@ -39,6 +40,11 @@ export const operations = {
         product,
       };
     },
+
+    getAllForUser: (userId: string) =>
+      db.query.orders.findMany({
+        where: eq(orders.userId, userId),
+      }),
 
     getProductOrders: (productId: number) =>
       db.query.orders.findMany({
@@ -62,5 +68,33 @@ export const operations = {
 
     getUser: (email: string) =>
       db.query.users.findFirst({ where: eq(users.email, email) }),
+  },
+  affiliate: {
+    create: async (data: InsertAffiliateLinkSchema) =>
+      (await db.insert(affiliateLinks).values(data).returning())[0],
+
+    getAllForUser: (userId: string) =>
+      db.query.affiliateLinks.findMany({
+        where: eq(affiliateLinks.userId, userId),
+        with: {
+          product: true,
+        },
+      }),
+
+    getAffiliate: (afId: string) =>
+      db.query.affiliateLinks.findFirst({ where: eq(affiliateLinks.id, afId) }),
+
+    getAffiliateOrders: async (affiliateId: string) => {
+      const { password: _, ...rest } = getTableColumns(users);
+      const { address, productId, userId, isPaid, ...restO } =
+        getTableColumns(orders);
+
+      return await db
+        .select({ user: rest, ...restO, product: products })
+        .from(orders)
+        .where(eq(orders.affiliateLinkId, affiliateId))
+        .leftJoin(products, eq(products.id, orders.productId))
+        .leftJoin(users, eq(users.id, orders.userId));
+    },
   },
 };

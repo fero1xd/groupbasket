@@ -1,5 +1,5 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { orders, products, users } from "./schema";
+import { affiliateLinks, orders, products, users } from "./schema";
 import { z } from "zod";
 
 export const insertProductSchema = createInsertSchema(products, {
@@ -41,11 +41,25 @@ export const loginSchema = registerSchema.omit({
   name: true,
 });
 
+export const createAffiliateLinkSchema = createInsertSchema(affiliateLinks)
+  .pick({
+    productId: true,
+    userId: true,
+    expiresAt: true,
+  })
+  .strict();
+
+export const affiliateLinkSchema = createSelectSchema(affiliateLinks).strict();
+
 export type InsertProductSchema = z.infer<typeof insertProductSchema>;
 export type InsertOrderSchema = z.infer<typeof insertOrderSchema>;
 export type InsertUserSchema = z.infer<typeof registerSchema>;
 export type LoginSchema = z.infer<typeof loginSchema>;
+export type InsertAffiliateLinkSchema = z.infer<
+  typeof createAffiliateLinkSchema
+>;
 
 export type Product = z.infer<typeof selectProductSchema>;
 export type Order = z.infer<typeof selectOrderSchema>;
 export type RawUser = typeof users.$inferSelect;
+export type AffiliateLink = z.infer<typeof affiliateLinkSchema>;

@@ -52,3 +52,10 @@ export const assureAdmin: RequestHandler = async (_req, res, next) => {
 
   return next();
 };
+export const assureAffiliate: RequestHandler = async (_req, res, next) => {
+  if (!res.locals.user?.isAffiliate && !res.locals.user?.isAdmin) {
+    return next(new ApiError(401, "not authorized"));
+  }
+
+  return next();
+};

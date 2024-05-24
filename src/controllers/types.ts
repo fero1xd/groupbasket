@@ -6,6 +6,8 @@ import type {
   Order,
   InsertUserSchema,
   LoginSchema,
+  AffiliateLink,
+  InsertAffiliateLinkSchema,
 } from "../db/zod";
 
 export type GetProductHandler = RequestHandler<
@@ -32,6 +34,8 @@ export type OrderProductHandler = RequestHandler<
   InsertOrderSchema
 >;
 
+export type GetMyOrdersHandler = RequestHandler<unknown, { orders: Order[] }>;
+
 export type RegisterUserHandler = RequestHandler<
   unknown,
   string,
@@ -40,8 +44,20 @@ export type RegisterUserHandler = RequestHandler<
 
 export type LoginHandler = RequestHandler<unknown, string, LoginSchema>;
 
-export type CreateAffiliateHandler = RequestHandler<
+export type CreateAffiliateLink = RequestHandler<
   unknown,
-  string,
-  InsertUserSchema
+  { link: AffiliateLink },
+  InsertAffiliateLinkSchema
+>;
+
+export type GetAffilateLinks = RequestHandler<
+  unknown,
+  { links: AffiliateLink[] }
+>;
+
+export type GetAffiliateOrders = RequestHandler<
+  {
+    id: string;
+  },
+  { orders: Order[] }
 >;

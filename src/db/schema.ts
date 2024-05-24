@@ -9,6 +9,7 @@ import {
   timestamp,
   boolean,
   primaryKey,
+  unique,
 } from "drizzle-orm/pg-core";
 
 function timestamps() {
@@ -40,6 +41,7 @@ export const products = pgTable("products", {
 
 export const productsRelation = relations(products, ({ many }) => ({
   orders: many(orders),
+  affiliates: many(affiliateLinks),
 }));
 
 export const orders = pgTable(
@@ -52,6 +54,9 @@ export const orders = pgTable(
       .notNull()
       .references(() => users.id),
     address: text("address").notNull(),
+    affiliateLinkId: text("affiliateLinkId").references(
+      () => affiliateLinks.id
+    ),
     isPaid: boolean("isPaid").default(false).notNull(),
     createdAt: timestamp("createdAt").notNull().defaultNow(),
   },
@@ -66,6 +71,10 @@ export const ordersRelations = relations(orders, ({ one }) => ({
   user: one(users, {
     fields: [orders.userId],
     references: [users.id],
+  }),
+  affiliateLink: one(affiliateLinks, {
+    fields: [orders.affiliateLinkId],
+    references: [affiliateLinks.id],
   }),
 }));
 
@@ -84,7 +93,45 @@ export const users = pgTable("users", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   orders: many(orders),
+  affiliates: many(affiliateLinks),
 }));
+
+export const affiliateLinks = pgTable(
+  "links",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => createId())
+      .notNull(),
+    productId: integer("productId")
+      .notNull()
+      .references(() => products.id),
+    userId: text("userId")
+      .notNull()
+      .references(() => users.id),
+    expiresAt: timestamp("expiresAt").notNull(),
+    ...timestamps(),
+  },
+  (self) => ({
+    // There will be only 1 aff link for a product by a single user
+    uniq: unique().on(self.productId, self.userId),
+  })
+);
+
+export const affiliateLinksRelations = relations(
+  affiliateLinks,
+  ({ one, many }) => ({
+    product: one(products, {
+      fields: [affiliateLinks.productId],
+      references: [products.id],
+    }),
+    user: one(users, {
+      fields: [affiliateLinks.userId],
+      references: [users.id],
+    }),
+    orders: many(orders),
+  })
+);
 
 export const sessions = pgTable("sessions", {
   id: text("id").primaryKey(),

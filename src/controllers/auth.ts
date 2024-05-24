@@ -44,8 +44,6 @@ export const login: LoginHandler = async (req, res, next) => {
   return res.send("Success");
 };
 
-export const createAffiliate = async () => {};
-
 export const getMe: RequestHandler = (_req, res) => {
   return res.json({ me: res.locals.user });
 };
