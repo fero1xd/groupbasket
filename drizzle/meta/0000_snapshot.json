@@ -1,5 +1,5 @@
 {
-  "id": "e0bf8925-e0df-451e-987c-3652b015d73b",
+  "id": "9cc998a9-80aa-4dbf-8786-17884077e8e5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "6",
   "dialect": "postgresql",
@@ -92,6 +92,12 @@
       "name": "orders",
       "schema": "",
       "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true
+        },
         "productId": {
           "name": "productId",
           "type": "integer",
@@ -109,6 +115,12 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "affiliateLinkId": {
+          "name": "affiliateLinkId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "isPaid": {
           "name": "isPaid",
@@ -152,18 +164,32 @@
           ],
           "onDelete": "no action",
           "onUpdate": "no action"
+        },
+        "orders_affiliateLinkId_links_id_fk": {
+          "name": "orders_affiliateLinkId_links_id_fk",
+          "tableFrom": "orders",
+          "tableTo": "links",
+          "columnsFrom": [
+            "affiliateLinkId"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
-      "compositePrimaryKeys": {
-        "orders_productId_userId_pk": {
-          "name": "orders_productId_userId_pk",
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "orders_productId_userId_unique": {
+          "name": "orders_productId_userId_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "productId",
             "userId"
           ]
         }
-      },
-      "uniqueConstraints": {}
+      }
     },
     "public.products": {
       "name": "products",

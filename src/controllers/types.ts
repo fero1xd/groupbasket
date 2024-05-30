@@ -59,5 +59,5 @@ export type GetAffiliateOrders = RequestHandler<
   {
     id: string;
   },
-  { orders: Order[] }
+  { orders: Omit<Order, "productId" | "userId" | "address" | "isPaid">[] }
 >;

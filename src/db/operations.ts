@@ -44,6 +44,9 @@ export const operations = {
     getAllForUser: (userId: string) =>
       db.query.orders.findMany({
         where: eq(orders.userId, userId),
+        with: {
+          product: true,
+        },
       }),
 
     getProductOrders: (productId: number) =>
@@ -80,8 +83,13 @@ export const operations = {
       db.query.users.findFirst({ where: eq(users.email, email) }),
   },
   affiliate: {
-    create: async (data: InsertAffiliateLinkSchema) =>
-      (await db.insert(affiliateLinks).values(data).returning())[0],
+    create: async (data: InsertAffiliateLinkSchema, userId: string) =>
+      (
+        await db
+          .insert(affiliateLinks)
+          .values({ ...data, userId })
+          .returning()
+      )[0],
 
     getAllForUser: (userId: string) =>
       db.query.affiliateLinks.findMany({

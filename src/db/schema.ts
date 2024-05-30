@@ -8,7 +8,6 @@ import {
   integer,
   timestamp,
   boolean,
-  primaryKey,
   unique,
 } from "drizzle-orm/pg-core";
 

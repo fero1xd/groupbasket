@@ -6,6 +6,7 @@ import {
 } from "../controllers/products";
 import type { z } from "zod";
 import {
+  createAffiliateLinkSchema,
   insertOrderSchema,
   insertProductSchema,
   loginSchema,
@@ -59,11 +60,12 @@ export const registerRoutes = () => {
   );
   router.post("/auth/login", checkPayload(loginSchema), login);
 
+  router.get("/products", getAllProducts);
+  router.get("/products/:id", getProduct);
+
   // Protected routes
   router.use(authMiddleware);
 
-  router.get("/products", getAllProducts);
-  router.get("/products/:id", getProduct);
   router.post("/products", checkPayload(insertProductSchema), createProduct);
   router.get("/auth/me", getMe);
 
@@ -74,7 +76,11 @@ export const registerRoutes = () => {
   // Affiliate routes
   router.use(assureAffiliate);
 
-  router.post("/affiliates", createAffiliateLink);
+  router.post(
+    "/affiliates",
+    checkPayload(createAffiliateLinkSchema),
+    createAffiliateLink
+  );
   router.get("/affiliates/my", getMyAffiliateLinks);
   router.get("/affiliates/orders/:id", getAffiliateOrders);
 

@@ -11,7 +11,7 @@ export const createAffiliateLink: CreateAffiliateLink = async (
   res,
   next
 ) => {
-  const link = await operations.affiliate.create(req.body);
+  const link = await operations.affiliate.create(req.body, res.locals.user!.id);
   if (!link) {
     return next(new ApiError(400, "failed to create your affiliate link"));
   }

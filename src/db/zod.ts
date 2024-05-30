@@ -45,7 +45,6 @@ export const loginSchema = registerSchema.omit({
 export const createAffiliateLinkSchema = createInsertSchema(affiliateLinks)
   .pick({
     productId: true,
-    userId: true,
     expiresAt: true,
   })
   .strict();

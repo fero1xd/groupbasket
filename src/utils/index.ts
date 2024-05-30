@@ -10,7 +10,8 @@ import { operations } from "../db/operations";
 export const registerMiddlewares = (app: Application) => {
   app.use(
     cors({
-      origin: "*",
+      origin: ["http://localhost:5173"],
+      credentials: true,
     })
   );
   app.use(json());
