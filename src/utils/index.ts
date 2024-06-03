@@ -12,7 +12,7 @@ export const registerMiddlewares = (app: Application) => {
     cors({
       origin: ["http://localhost:5173"],
       credentials: true,
-    })
+    }),
   );
   app.use(json());
 
@@ -28,8 +28,14 @@ export const registerMiddlewares = (app: Application) => {
 
     const order = req.body.payload.order as Orders.RazorpayOrder;
     // TODO: Handle this better
+    //
+    console.log(order);
+    console.log(req.body.payload);
 
-    operations.orders.setOrderStatus(order.notes!.orderId as string, true);
+    operations.orders.setOrderStatus(
+      order.entity.notes.orderId as string,
+      true,
+    );
   });
   app.use("/api", registerRoutes());
 
@@ -39,7 +45,7 @@ export const registerMiddlewares = (app: Application) => {
 export const createEmailTemplate = (
   productName: string,
   address: string,
-  orderId: string
+  orderId: string,
 ) =>
   `
 <p>${productName} is now available to purchase. Click the link below to purchase now!</p>
@@ -69,7 +75,7 @@ export const createEmailTemplate = (
   name="cancel_url"
   value="https://example.com/payment-cancel"
 />
-<button 
+<button
 style="
 padding: 10px 24px;
 background-color: #1565c0;

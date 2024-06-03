@@ -10,9 +10,9 @@ export const orderProduct: OrderProductHandler = async (req, res, next) => {
 
   if (req.body.affiliateLinkId) {
     const aff = await operations.affiliate.getAffiliate(
-      req.body.affiliateLinkId
+      req.body.affiliateLinkId,
     );
-    if (!aff) {
+    if (!aff || aff.userId === res.locals.user?.id) {
       return next(new ApiError(404, "couldnt find affiliate"));
     }
     result = await operations.orders.create({
@@ -42,7 +42,7 @@ export const orderProduct: OrderProductHandler = async (req, res, next) => {
         orders.map(async (order) => {
           const orderId = await createOrder(
             order.id,
-            result.product.sellingPrice
+            result.product.sellingPrice,
           );
 
           return {
@@ -51,11 +51,11 @@ export const orderProduct: OrderProductHandler = async (req, res, next) => {
             html: createEmailTemplate(
               result.product.name,
               order.address,
-              orderId
+              orderId,
             ),
           };
-        })
-      )
+        }),
+      ),
     );
 
     return res.json({ order: result.order });

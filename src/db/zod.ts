@@ -40,9 +40,12 @@ export const registerSchema = createInsertSchema(users, {
 
 export const loginSchema = registerSchema.omit({
   name: true,
+  isAffiliate: true,
 });
 
-export const createAffiliateLinkSchema = createInsertSchema(affiliateLinks)
+export const createAffiliateLinkSchema = createInsertSchema(affiliateLinks, {
+  expiresAt: z.coerce.date(),
+})
   .pick({
     productId: true,
     expiresAt: true,

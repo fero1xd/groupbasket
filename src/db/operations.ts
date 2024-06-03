@@ -1,4 +1,4 @@
-import { eq, getTableColumns } from "drizzle-orm";
+import { count, eq, getTableColumns } from "drizzle-orm";
 import { db } from ".";
 import { affiliateLinks, orders, products, users } from "./schema";
 import type {
@@ -114,5 +114,11 @@ export const operations = {
         .leftJoin(products, eq(products.id, orders.productId))
         .leftJoin(users, eq(users.id, orders.userId));
     },
+
+    countAffiliateOrders: (linkId: string) =>
+      db
+        .select({ count: count() })
+        .from(orders)
+        .where(eq(orders.affiliateLinkId, linkId)),
   },
 };

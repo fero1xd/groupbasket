@@ -43,20 +43,20 @@ export const registerRoutes = () => {
   router.post(
     "/auth/register",
     checkPayload(registerSchema),
-    (req, res, next) => {
-      if (typeof req.body.isAffiliate === "boolean") {
-        return authMiddleware(req, res, next);
-      }
-      return next();
-    },
-    (req, res, next) => {
-      if (typeof req.body.isAffiliate === "boolean") {
-        return assureAdmin(req, res, next);
-      }
+    // (req, res, next) => {
+    //   if (typeof req.body.isAffiliate === "boolean") {
+    //     return authMiddleware(req, res, next);
+    //   }
+    //   return next();
+    // },
+    // (req, res, next) => {
+    //   if (typeof req.body.isAffiliate === "boolean") {
+    //     return assureAdmin(req, res, next);
+    //   }
 
-      return next();
-    },
-    registerUser
+    //   return next();
+    // },
+    registerUser,
   );
   router.post("/auth/login", checkPayload(loginSchema), login);
 
@@ -79,7 +79,7 @@ export const registerRoutes = () => {
   router.post(
     "/affiliates",
     checkPayload(createAffiliateLinkSchema),
-    createAffiliateLink
+    createAffiliateLink,
   );
   router.get("/affiliates/my", getMyAffiliateLinks);
   router.get("/affiliates/orders/:id", getAffiliateOrders);

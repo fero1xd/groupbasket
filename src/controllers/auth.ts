@@ -1,9 +1,9 @@
-import { Argon2id } from "oslo/password";
-import { operations } from "../db/operations";
-import type { LoginHandler, RegisterUserHandler } from "./types";
-import { ApiError } from "../utils/errors";
 import type { RequestHandler } from "express";
+import { Argon2id } from "oslo/password";
 import { setSessionCookie } from "../auth/utils";
+import { operations } from "../db/operations";
+import { ApiError } from "../utils/errors";
+import type { LoginHandler, RegisterUserHandler } from "./types";
 
 export const registerUser: RegisterUserHandler = async (req, res, next) => {
   const hashedPassword = await new Argon2id().hash(req.body.password);
@@ -34,7 +34,7 @@ export const login: LoginHandler = async (req, res, next) => {
 
   const validPassword = await new Argon2id().verify(
     dbUser.password,
-    req.body.password
+    req.body.password,
   );
   if (!validPassword) {
     return next(new ApiError(404, "invalid credentials"));
