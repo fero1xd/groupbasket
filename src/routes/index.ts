@@ -66,7 +66,12 @@ export const registerRoutes = () => {
   // Protected routes
   router.use(authMiddleware);
 
-  router.post("/products", checkPayload(insertProductSchema), createProduct);
+  router.post(
+    "/products",
+    assureAdmin,
+    checkPayload(insertProductSchema),
+    createProduct,
+  );
   router.get("/auth/me", getMe);
 
   // Orders Route

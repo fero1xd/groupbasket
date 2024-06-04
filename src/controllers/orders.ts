@@ -12,7 +12,11 @@ export const orderProduct: OrderProductHandler = async (req, res, next) => {
     const aff = await operations.affiliate.getAffiliate(
       req.body.affiliateLinkId,
     );
-    if (!aff || aff.userId === res.locals.user?.id) {
+    if (
+      !aff ||
+      aff.userId === res.locals.user?.id ||
+      new Date(aff.expiresAt) < new Date()
+    ) {
       return next(new ApiError(404, "couldnt find affiliate"));
     }
     result = await operations.orders.create({
