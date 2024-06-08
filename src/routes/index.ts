@@ -1,30 +1,32 @@
-import { Router, type RequestHandler } from "express";
+import { Router, type RequestHandler } from 'express';
 import {
   createProduct,
   getAllProducts,
+  getImageUploadUrls,
   getProduct,
-} from "../controllers/products";
-import type { z } from "zod";
+} from '../controllers/products';
+import type { z } from 'zod';
 import {
   createAffiliateLinkSchema,
+  getImageUploadUrlSchema,
   insertOrderSchema,
   insertProductSchema,
   loginSchema,
   registerSchema,
-} from "../db/zod";
-import { ApiError } from "../utils/errors";
-import { getMe, login, registerUser } from "../controllers/auth";
+} from '../db/zod';
+import { ApiError } from '../utils/errors';
+import { getMe, login, registerUser } from '../controllers/auth';
 import {
   assureAdmin,
   assureAffiliate,
   authMiddleware,
-} from "../auth/middleware";
+} from '../auth/middleware';
 import {
   createAffiliateLink,
   getAffiliateOrders,
   getMyAffiliateLinks,
-} from "../controllers/affiliate";
-import { getMyOrders, orderProduct } from "../controllers/orders";
+} from '../controllers/affiliate';
+import { getMyOrders, orderProduct } from '../controllers/orders';
 
 const checkPayload = (schema: z.ZodSchema): RequestHandler => {
   return (req, _res, next) => {
@@ -41,7 +43,7 @@ export const registerRoutes = () => {
   const router = Router();
 
   router.post(
-    "/auth/register",
+    '/auth/register',
     checkPayload(registerSchema),
     // (req, res, next) => {
     //   if (typeof req.body.isAffiliate === "boolean") {
@@ -56,38 +58,44 @@ export const registerRoutes = () => {
 
     //   return next();
     // },
-    registerUser,
+    registerUser
   );
-  router.post("/auth/login", checkPayload(loginSchema), login);
+  router.post('/auth/login', checkPayload(loginSchema), login);
 
-  router.get("/products", getAllProducts);
-  router.get("/products/:id", getProduct);
+  router.get('/products', getAllProducts);
+  router.get('/products/:id', getProduct);
 
   // Protected routes
   router.use(authMiddleware);
 
   router.post(
-    "/products",
+    '/products',
     assureAdmin,
     checkPayload(insertProductSchema),
-    createProduct,
+    createProduct
   );
-  router.get("/auth/me", getMe);
+  router.post(
+    '/products/url',
+    assureAdmin,
+    checkPayload(getImageUploadUrlSchema),
+    getImageUploadUrls
+  );
+  router.get('/auth/me', getMe);
 
   // Orders Route
-  router.post("/orders", checkPayload(insertOrderSchema), orderProduct);
-  router.get("/orders/my", getMyOrders);
+  router.post('/orders', checkPayload(insertOrderSchema), orderProduct);
+  router.get('/orders/my', getMyOrders);
 
   // Affiliate routes
   router.use(assureAffiliate);
 
   router.post(
-    "/affiliates",
+    '/affiliates',
     checkPayload(createAffiliateLinkSchema),
-    createAffiliateLink,
+    createAffiliateLink
   );
-  router.get("/affiliates/my", getMyAffiliateLinks);
-  router.get("/affiliates/orders/:id", getAffiliateOrders);
+  router.get('/affiliates/my', getMyAffiliateLinks);
+  router.get('/affiliates/orders/:id', getAffiliateOrders);
 
   return router;
 };

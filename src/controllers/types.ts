@@ -1,4 +1,4 @@
-import type { RequestHandler } from "express";
+import type { RequestHandler } from 'express';
 import type {
   InsertOrderSchema,
   InsertProductSchema,
@@ -8,7 +8,7 @@ import type {
   LoginSchema,
   AffiliateLink,
   InsertAffiliateLinkSchema,
-} from "../db/zod";
+} from '../db/zod';
 
 export type GetProductHandler = RequestHandler<
   {
@@ -59,5 +59,11 @@ export type GetAffiliateOrders = RequestHandler<
   {
     id: string;
   },
-  { orders: Omit<Order, "productId" | "userId" | "address" | "isPaid">[] }
+  { orders: Omit<Order, 'productId' | 'userId' | 'address' | 'isPaid'>[] }
+>;
+
+export type GetImageUploadUrl = RequestHandler<
+  unknown,
+  { urls: { url: string; key: string }[] },
+  { fileTypes: string[] }
 >;

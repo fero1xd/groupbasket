@@ -1,10 +1,12 @@
-import { operations } from "../db/operations";
+import { operations } from '../db/operations';
+import { getPresignedUrl } from '../s3';
 
 import type {
   CreateProductHandler,
   GetAllProductsHandler,
+  GetImageUploadUrl,
   GetProductHandler,
-} from "./types";
+} from './types';
 
 export const getAllProducts: GetAllProductsHandler = async (_, res) => {
   const products = await operations.products.getAllProducts();
@@ -33,4 +35,16 @@ export const createProduct: CreateProductHandler = async (req, res) => {
   }
 
   return res.json({ product });
+};
+
+export const getImageUploadUrls: GetImageUploadUrl = async (req, res) => {
+  const urls = [];
+  for (const file of req.body.fileTypes) {
+    const { url, key } = await getPresignedUrl(file.split('/')[1] || 'jpg');
+    urls.push({ url, key });
+  }
+
+  return res.json({
+    urls,
+  });
 };

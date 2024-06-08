@@ -1,6 +1,6 @@
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { affiliateLinks, orders, products, users } from "./schema";
-import { z } from "zod";
+import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
+import { affiliateLinks, orders, products, users } from './schema';
+import { z } from 'zod';
 
 export const insertProductSchema = createInsertSchema(products, {
   images: z.string().array(),
@@ -28,7 +28,7 @@ export const insertOrderSchema = createInsertSchema(orders)
 export const selectOrderSchema = createSelectSchema(orders).strict();
 
 export const registerSchema = createInsertSchema(users, {
-  password: z.string().min(6, "password must be atleast 6 characters long"),
+  password: z.string().min(6, 'password must be atleast 6 characters long'),
 })
   .omit({
     id: true,
@@ -53,6 +53,10 @@ export const createAffiliateLinkSchema = createInsertSchema(affiliateLinks, {
   .strict();
 
 export const affiliateLinkSchema = createSelectSchema(affiliateLinks).strict();
+
+export const getImageUploadUrlSchema = z.object({
+  fileTypes: z.string().array(),
+});
 
 export type InsertProductSchema = z.infer<typeof insertProductSchema>;
 export type InsertOrderSchema = z.infer<typeof insertOrderSchema>;
